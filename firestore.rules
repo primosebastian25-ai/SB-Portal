@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    // Tanging ang mga taong may dokumento sa "users" ang makakapasok.
+    function isMember() { return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function isAdmin()  { return isMember() && profile().role == 'admin'; }
+    function canEdit()  { return isMember() && profile().role in ['admin', 'editor']; }
+
+    // Listahan ng may access. Admin lang ang nakakapagdagdag o nakakapagbago.
+    match /users/{uid} {
+      allow read: if isMember() || (signedIn() && request.auth.uid == uid);
+      allow write: if isAdmin();
+    }
+
+    // Listahan ng mga konsehal: admin lang ang nakakapag-edit.
+    match /members/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+
+    match /measures/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    match /sessions/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    match /announcements/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    match /committees/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    match /communications/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    match /documents/{id} {
+      allow read: if isMember();
+      allow write: if canEdit();
+    }
+
+    // Lahat ng iba pa: sarado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

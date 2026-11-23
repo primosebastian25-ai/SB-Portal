@@ -1,0 +1,16 @@
+{
+  "name": "Portal ng Konsehal – SB Romblon",
+  "short_name": "SB Portal",
+  "description": "Panloob na portal ng Sangguniang Bayan ng Romblon",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f4f2",
+  "theme_color": "#0f4c5c",
+  "lang": "fil",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
