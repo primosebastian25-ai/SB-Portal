@@ -296,8 +296,9 @@ const CLOSED = ["Approved","Signed by the Mayor","Vetoed","Withdrawn / Archived"
 const TYPES = ["Ordinance","Resolution","Appropriation Ordinance","Other"];
 const KINDS = ["Regular Session","Special Session","Committee Meeting","Committee Hearing","Public Hearing"];
 const POSITIONS = ["Vice Mayor (Presiding Officer)","Councilor","ABC President (Ex-officio)","SK Federation President (Ex-officio)","IPMR"];
-const ROLES = [["admin","Administrator"],["editor","Editor"],["viewer","Viewer"]];
-const ROLE_HINT = {admin:"Full access, including user management",editor:"Can create and edit sessions, measures and notices",viewer:"Read-only access"};
+const ROLES = [["admin","Admin"],["viewer","Councilor"],["editor","Editor"]];
+const ROLE_CHOICES = ROLES.filter(r=>r[0]!=="editor");
+const ROLE_HINT = {admin:"Full access: sessions, measures, documents, members and user access",editor:"Can create and edit sessions, measures and notices",viewer:"Can view everything and open documents"};
 const COLS = ["members","measures","sessions","announcements","committees","communications","documents"];
 const DOC_CATS = ["Internal Rules of Procedure","Laws & References","Forms & Templates","Memoranda & Circulars","Reports","Executive Orders","Other"];
 const COMM_STATUS = [["Received","info"],["For Agenda","warn"],["Referred to Committee","warn"],["Acted Upon","ok"],["Noted / Filed","plain"]];
@@ -1184,7 +1185,7 @@ function docForm(d={}){
 }
 function userForm(u={}){
   const self=u.id&&u.id===state.user.uid;
-  const roleSel=sel("role",ROLES,u.role||"viewer"); const hint=el("span",{class:"hint"},ROLE_HINT[u.role||"viewer"]);
+  const roleSel=sel("role",ROLE_CHOICES,u.role==="editor"?"admin":(u.role||"viewer")); const hint=el("span",{class:"hint"},ROLE_HINT[u.role||"viewer"]);
   roleSel.addEventListener("change",()=>{ hint.textContent=ROLE_HINT[roleSel.value]; });
   openDialog(u.id?"Edit user access":"Grant access",[
     fld("User UID",inp("uid",u.id,{readonly:u.id?true:null,placeholder:"Copied from Firebase console"}),true,u.id?null:"Firebase console → Authentication → Users → copy the User UID."),
